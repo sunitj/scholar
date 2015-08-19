@@ -17,9 +17,9 @@ The following instructions are for the file `citations.r`, the other files were 
 1. Go to your google scholar profile. The URL should have a term similar to this: `user=VII2oEQAAAAJ`. <-- that's me!
 2. Copy the user value and replace the `user` value in `citations.r`
 3. Create a new sheet on google drive, type it some names in two columns in the first row.
-  3. I chose "Year" and "Citations".
-  3. I also named my worksheet "citations".
-  3. Save sheet.
+  3.1 I chose "Year" and "Citations".
+  3.2 I also named my worksheet "citations".
+  3.3 Save sheet.
 4. Change the sharing settings to `Anyone with the link`,`Can View` and copy the link generated.
 5. Paste the link in `citations.url`
 6. Once this script runs, the sheet named citations should be populated.
