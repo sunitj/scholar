@@ -9,9 +9,10 @@ The following instructions are for the file `citations.r`, the other files were 
   3. I chose "Year" and "Citations".
   3. I also named my worksheet "citations".
   3. Save sheet.
-4. Copy the link to the sheet and paste it in `citations.url`
-5. Once this script runs, the sheet named citations should be populated.
-6. Insert a chart in your google sites page and make a chart using this spreadsheet.
+4. Change the sharing settings to `Anyone with the link`,`Can View` and copy the link generated.
+5. Paste the link in `citations.url`
+6. Once this script runs, the sheet named citations should be populated.
+7. Insert a chart in your google sites page and make a chart using this spreadsheet.
 *Example:* http://www.sunitjain.com/publications
 
 ### Untested:
