@@ -20,7 +20,7 @@ cit <- get_citation_history(user)
 # Updates Google spreadsheets, which updates the citations graph on my website!
 if (length(cit)>1){
 	library(googlesheets)
-	citations.url="https://docs.google.com/spreadsheets/d/1MhrkS2uH9D1cZ7RXcK3Cyyjy8baZqFywrVa6zYJ0tng/edit#gid=0"
+	citations.url="https://docs.google.com/spreadsheets/d/1MhrkS2uH9D1cZ7RXcK3Cyyjy8baZqFywrVa6zYJ0tng/edit?usp=sharing"
 	citations=gs_url(citations.url,lookup=T,visibility = "private")
 	gs_edit_cells(citations,ws="citations",input=cit,anchor = "A2",col_names = FALSE)
 } else {
