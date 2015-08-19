@@ -2,9 +2,8 @@
 Adding google scholar citations to google sites. [*Example*](http://www.sunitjain.com/publications)
 
 ## Inspiration
-This repo was inspired by the following blog posts:
-1.	[Post 1](http://tuxette.nathalievilla.org/?p=1682)
-2.	[Post 2](http://rogiersbart.blogspot.fr/2015/05/put-google-scholar-citations-on-your.html)
+This repo was inspired by the following blog posts:1. [Post 1](http://tuxette.nathalievilla.org/?p=1682)
+2. [Post 2](http://rogiersbart.blogspot.fr/2015/05/put-google-scholar-citations-on-your.html)
 
 I found then both on [r-bloggers](http://www.r-bloggers.com/).
 
