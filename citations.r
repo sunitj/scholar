@@ -14,15 +14,15 @@
 # Gets citations from Google Scholar
 library(scholar)
 # Google Scholar ID
-user = "VII2oEQAAAAJID"
+user = "VII2oEQAAAAJ"
 cit <- get_citation_history(user)
 
 # Updates Google spreadsheets, which updates the citations graph on my website!
-if (length(cit)>1){
+if (length(cit$year)>0){
 	library(googlesheets)
 	citations.url="https://docs.google.com/spreadsheets/d/1MhrkS2uH9D1cZ7RXcK3Cyyjy8baZqFywrVa6zYJ0tng/edit?usp=sharing"
 	citations=gs_url(citations.url,lookup=T,visibility = "private")
 	gs_edit_cells(citations,ws="citations",input=cit,anchor = "A2",col_names = FALSE)
 } else {
-	print("The IP may have been blocked (again!)!")
+	print("Either check the Scholar ID,\nif that's OK your IP may have been blocked (again!)!\nTry again in a few days")
 }
