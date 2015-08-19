@@ -1,0 +1,66 @@
+---
+title: "Google Scholar"
+author: "Sunit Jain"
+date: "August 19, 2015"
+output: html_document
+---
+
+```{r setup}
+library(scholar)
+# Google Scholar ID
+my_id = "VII2oEQAAAAJID"
+```
+
+```{r get_pub}
+get_all_publications = function(authorid) {
+  # initializing the publication list
+  all_publications = NULL
+  # initializing a counter for the citations
+  cstart = 0
+  # initializing a boolean that check if the loop should continue
+  notstop = TRUE
+ 
+  while (notstop) {
+    new_publications = try(get_publications(my_id, cstart=cstart), silent=TRUE)
+    if (class(new_publications)=="try-error") {
+      notstop = FALSE
+    } else {
+      # append publication list
+      all_publications = rbind(all_publications, new_publications)
+      cstart=cstart+20
+      # Wait for a random period of time so your IP isn't blocked
+      Sys.sleep(sample(1:5, 1))
+    }
+  }
+  return(all_publications)
+}
+```
+
+```{r citations}
+library(ggplot2)
+cit <- get_citation_history(my_id)
+```
+
+```{r plot_citations, eval=FALSE}
+ggplot(cit,aes(x=year,y=cites))+
+  geom_bar(stat='identity')+
+  theme_bw()+
+  xlab('Year of citation')+
+  ylab('Google Scholar\n cites')+
+  annotate('text',label=format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),x=-Inf,y=Inf,vjust=1.5,hjust=-0.05,size=3,colour='gray')
+ggsave(filename = "myCitations.png",width = 8, height = 3,units = "in")
+all_publications = get_all_publications(my_id)
+dim(all_publications)
+```
+
+```{r update_sheet}
+# Update Google Sheets
+#cit2=data.frame(year=c(2012,2013,2014,2015),cites=c(5,24,52,56))
+library(googlesheets)
+citations.url="https://docs.google.com/spreadsheets/d/1MhrkS2uH9D1cZ7RXcK3Cyyjy8baZqFywrVa6zYJ0tng/edit#gid=0"
+citations=gs_url(citations.url,lookup=T,visibility = "private")
+gs_edit_cells(citations,ws="citations",input=cit,anchor = "A2",col_names = FALSE)
+```
+
+
+
