@@ -1,4 +1,4 @@
-#!/usr/bin/R
+#!/usr/bin/Rscript
 
 # Setup:
 # Go to your google scholar profile. The URL should have a term similar to this: user=VII2oEQAAAAJ. <-- that's me!
@@ -24,5 +24,5 @@ if (length(cit$year)>0){
 	citations=gs_url(citations.url,lookup=T,visibility = "private")
 	gs_edit_cells(citations,ws="citations",input=cit,anchor = "A2",col_names = FALSE)
 } else {
-	print("Either check the Scholar ID,\nif that's OK your IP may have been blocked (again!)!\nTry again in a few days")
+	writeLines("[FATAL] Either check the Scholar ID,\nIf that's OK your IP may have been blocked (again!)!\nTry in a few days...")
 }
