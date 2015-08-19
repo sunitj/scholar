@@ -1,10 +1,18 @@
-# scholar 🎓
+# S<sup>3</sup> - Scholar --> Sheet --> Site 🎓
 Adding google scholar citations to google sites. [*Example*](http://www.sunitjain.com/publications)
+
+## Inspiration
+This repo was inspired by the following blog posts:
+1.	[Post 1](http://tuxette.nathalievilla.org/?p=1682)
+2.	[Post 2](http://rogiersbart.blogspot.fr/2015/05/put-google-scholar-citations-on-your.html)
+
+I found then both on [r-bloggers](http://www.r-bloggers.com/).
+
 
 ## Why would you want to do this?
 This script combined with a job scheduler (like cron) can be used to keep your Google site based website up to date with the data in your Google scholar profile	. The pipeline actually goes:
 
-`(Scholar) - [citations.r] -> (Sheets) - [google gadgets] -> (Sites)`
+`(Scholar) -- [citations.r] --> (Sheets) -- [google gadgets] --> (Sites)`
 
 ## Required Packages
 - [R (3.2.1 +)](https://www.r-project.org/)
