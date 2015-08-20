@@ -43,3 +43,18 @@ The following instructions are for the file `citations.r`, the other files were 
   - Waiting to see what happens.
   - I'm not sure if it'll require me to sign-in again. If it does, that might break the automation.
   - Still pretty neat to be able to do this. 😀
+  
+### Automation using Cron
+- To edit a cron job, type the following in your terminal:
+```Shell
+crontab -e
+```
+- Add the following two lines, carefully replacing the appropriate values.
+```Shell
+MAILTO=my@email.com
+@monthly	cd /local/path/to/repo && Rscript citations.r
+```
+- Save and exit.
+>␛:wq ⏎
+
+	(Type: escape,colon,w,q,return)
