@@ -38,11 +38,6 @@ The following instructions are for the file `citations.r`, the other files were 
 - `citations.r` needs to be run the very first time on an IDE like RStudio, this is because of the `googlesheets` dependency.
 - `googlesheets` will try and open your default web browser and authenticate the connection. Make sure you check the profile you're signed in as has access to the Google sheet.
 
-### Untested:
-- To automatically update your citations plot, use cron to run this script periodically. I decided to run it monthly. 
-  - Waiting to see what happens.
-  - I'm not sure if it'll require me to sign-in again. If it does, that might break the automation.
-  - Still pretty neat to be able to do this. 😀
   
 ### Automation using Cron
 - To edit a cron job, type the following in your terminal:
@@ -52,8 +47,9 @@ crontab -e
 - Add the following two lines, carefully replacing the appropriate values.
 ```Shell
 MAILTO=my@email.com
-@monthly	cd /local/path/to/repo && Rscript citations.r
+@hourly	cd /local/path/to/repo && Rscript citations.r
 ```
+>__Note:__ `@hourly` simply asks the cron daemon to execute the command at the top of the hour, every hour, as long as your computer is on. If you're doing this on a coumputer/server that your rarely shutdown, maybe try something like `@monthly`.
 - Save and exit.
 >␛:wq ⏎
 
