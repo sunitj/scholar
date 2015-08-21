@@ -23,6 +23,7 @@ if (length(cit$year)>0){
 	citations.url="https://docs.google.com/spreadsheets/d/1MhrkS2uH9D1cZ7RXcK3Cyyjy8baZqFywrVa6zYJ0tng/edit?usp=sharing"
 	citations=gs_url(citations.url,lookup=T,visibility = "private")
 	gs_edit_cells(citations,ws="citations",input=cit,anchor = "A2",col_names = FALSE)
+	writeLines("[Success!]\tYour Google sheet was updated!")
 } else {
-	writeLines("[FATAL] Either check the Scholar ID,\nIf that's OK your IP may have been blocked (again!)!\nTry in a few days...")
+	writeLines("[FATAL]\tEither check the Scholar ID,\nIf that's OK your IP may have been blocked (again!)!\nTry in a few days...")
 }
