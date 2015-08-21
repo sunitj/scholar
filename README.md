@@ -50,6 +50,7 @@ MAILTO=my@email.com
 @hourly	cd /local/path/to/repo && Rscript citations.r
 ```
 >__Note:__ `@hourly` simply asks the cron daemon to execute the command at the top of the hour, every hour, as long as your computer is on. If you're doing this on a coumputer/server that your rarely shutdown, maybe try something like `@monthly`.
+
 - Save and exit.
 >␛:wq ⏎
 
