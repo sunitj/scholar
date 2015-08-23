@@ -4,11 +4,15 @@ author: "Sunit Jain"
 date: "August 19, 2015"
 output: html_document
 ---
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+											echo=FALSE, warning=FALSE, message=FALSE)
+```
 
 ```{r setup}
 library(scholar)
 # Google Scholar ID
-my_id = "VII2oEQAAAAJID"
+user = "VII2oEQAAAAJ"
 ```
 
 ```{r get_pub}
@@ -21,7 +25,7 @@ get_all_publications = function(authorid) {
   notstop = TRUE
  
   while (notstop) {
-    new_publications = try(get_publications(my_id, cstart=cstart), silent=TRUE)
+    new_publications = try(get_publications(authorid, cstart=cstart), silent=TRUE)
     if (class(new_publications)=="try-error") {
       notstop = FALSE
     } else {
@@ -37,30 +41,139 @@ get_all_publications = function(authorid) {
 ```
 
 ```{r citations}
-library(ggplot2)
-cit <- get_citation_history(my_id)
+cit <- get_citation_history(user)
 ```
 
-```{r plot_citations, eval=FALSE}
+## Citations
+
+```{r plot_citations}
+library(ggplot2)
 ggplot(cit,aes(x=year,y=cites))+
   geom_bar(stat='identity')+
   theme_bw()+
   xlab('Year of citation')+
   ylab('Google Scholar\n cites')+
-  annotate('text',label=format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),x=-Inf,y=Inf,vjust=1.5,hjust=-0.05,size=3,colour='gray')
-ggsave(filename = "myCitations.png",width = 8, height = 3,units = "in")
-all_publications = get_all_publications(my_id)
-dim(all_publications)
+  annotate('text',label=format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),x=-Inf,y=Inf,vjust=1.5,hjust=-0.05,size=3,colour='gray') +
+	theme_minimal()
+
+#ggsave(filename = "Figs/myCitations.png",width = 8, height = 3,units = "in")
 ```
 
-```{r update_sheet}
+## Publications
+
+```{r all_pubs}
+all_publications = get_all_publications(user)
+#dim(all_publications)
+```
+
+### Publications by Year
+```{r prod_years}
+table(all_publications$year)
+```
+
+### Citation Summary
+```{r cit_summ}
+summary(all_publications$cites)
+```
+
+```{r update_sheet, eval=FALSE}
 # Update Google Sheets
-#cit2=data.frame(year=c(2012,2013,2014,2015),cites=c(5,24,52,56))
 library(googlesheets)
 citations.url="https://docs.google.com/spreadsheets/d/1MhrkS2uH9D1cZ7RXcK3Cyyjy8baZqFywrVa6zYJ0tng/edit#gid=0"
 citations=gs_url(citations.url,lookup=T,visibility = "private")
 gs_edit_cells(citations,ws="citations",input=cit,anchor = "A2",col_names = FALSE)
 ```
 
+## Co-authors
 
+```{r func_authors}
+get_all_coauthors = function(my_id, me=NULL, all_publications) {
+  if (is.null(me))
+    me = strsplit(get_profile(my_id)$name, " ")[[1]][2]
+  # make the author list a character vector
+  all_authors = sapply(all_publications$author, as.character)
+  # split it over ", "
+  all_authors = unlist(sapply(all_authors, strsplit, ", "))
+  names(all_authors) = NULL
+  # remove "..." and yourself
+  all_authors = all_authors[!(all_authors %in% c("..."))]
+  all_authors = all_authors[-grep(me, all_authors)]
+  # make a data frame with authors by decreasing number of appearance
+  all_authors = data.frame(name=factor(all_authors, 
+    levels=names(sort(table(all_authors),decreasing=TRUE))))
+}
+```
+
+```{r authors}
+all_authors = get_all_coauthors(user, me="Jain", all_publications)
+```
+
+```{r co_authors}
+library(dplyr)
+main_authors = all_authors %>% 
+	filter(name %in% names(which(table(all_authors$name)>1)))
+
+library(ggplot2)
+ggplot(main_authors, aes(name)) + 
+	geom_bar() + 
+	xlab("co-author") + 
+	scale_fill_brewer(palette = "Set2") +
+	theme_minimal() + 
+	theme(axis.text.x = element_text(angle=90, hjust=1))
+#ggsave(filename = "Figs/co-authors.png",width = 8, height = 3,units = "in")
+```
+
+## Abstract wordcloud
+
+```{r func_abstract}
+get_abstract = function(pub_id, my_id) {
+  print(pub_id)
+  paper_url = paste0("http://scholar.google.com/citations?view_op=view_citation&hl=fr&user=", 
+  									 my_id, "&citation_for_view=", my_id,":", pub_id)
+  paper_page = htmlTreeParse(paper_url, useInternalNodes=TRUE, encoding="utf-8")
+  paper_abstract = xpathSApply(paper_page, "//div[@id='gsc_descr']", xmlValue)
+  return(paper_abstract)
+}
+
+get_all_abstracts = function(my_id, all_publications) {
+  all_abstracts = sapply(all_publications$pubid, get_abstract, my_id=my_id)
+  return(all_abstracts)
+}
+```
+
+```{r abstracts}
+library(XML)
+all_abstracts = get_all_abstracts(user, all_publications)
+```
+
+```{r}
+library(tm)
+library(SnowballC)
+# transform the abstracts into "plan text documents"
+all_abstracts = lapply(all_abstracts, PlainTextDocument)
+# find term frequencies within each abstract
+terms_freq = lapply(all_abstracts,
+										termFreq, 
+                    control=list(removePunctuation=TRUE,
+                    						 stopwords=TRUE,
+                    						 removeNumbers=TRUE))
+
+# finally obtain the abstract/term frequency matrix
+all_words = unique(unlist(lapply(terms_freq, names)))
+matrix_terms_freq = lapply(terms_freq, function(astring) {
+  res = rep(0, length(all_words))
+  res[match(names(astring), all_words)] = astring
+  return(res)
+})
+matrix_terms_freq = Reduce("rbind", matrix_terms_freq)
+colnames(matrix_terms_freq) = all_words
+# deduce the term frequencies
+words_freq = apply(matrix_terms_freq, 2, sum)
+# keep only the most frequent and after a bit of cleaning up (not shown) make the word cloud
+important = words_freq[words_freq >= 2]
+library(wordcloud)
+set.seed(420)
+wordcloud(names(important), important,
+          color=brewer.pal(12, "Set3"), min.freq=1, max.words=length(important), scale=c(3, 0.3))
+```
 

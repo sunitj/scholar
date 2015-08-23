@@ -15,8 +15,8 @@
 library(scholar)
 # Google Scholar ID
 user = "VII2oEQAAAAJ"
-cit <- get_citation_history(user)
-
+cit = get_citation_history(user)
+cit$year = paste("Y",cit$year,sep="")
 # Updates Google spreadsheets, which updates the citations graph on my website!
 if (length(cit$year)>0){
 	library(googlesheets)
