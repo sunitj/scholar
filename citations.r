@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/local/bin/Rscript
 
 # Setup:
 # Go to your google scholar profile. The URL should have a term similar to this: user=VII2oEQAAAAJ. <-- that's me!
